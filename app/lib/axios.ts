@@ -1,10 +1,10 @@
 import axios from "axios";
 
-let mode = "devkkk";
+let mode = "devv";
 
 const getBaseURL = () => {
   if (mode === "dev") {
-    return "https://pn61xxhn-3000.inc1.devtunnels.ms/api";
+    return "http://localhost:3000/api";
   }
   return "https://www.ooshasprep.com/api";
 };

@@ -3,7 +3,7 @@ import axios from "axios";
 let mode = "devvv"
 
 export const serverInstance = axios.create({
-    baseURL: mode == "dev" ? "http://localhost:5000/api/v1/" : "https://uat.gatewayabroadeducations.com/api/v1/",
+    baseURL: mode == "dev" ? "http://localhost:5000/api/v1/" : "https://api.ooshasprep.com/api/v1/",
     timeout: 60000, // 10 seconds timeout
     headers: {
         "Content-Type": "application/json",
@@ -15,10 +15,10 @@ export const serverInstance = axios.create({
 
 
 
-export const baseUrl = mode == "dev" ? "http://localhost:5000" : "https://uat.gatewayabroadeducations.com";
+export const baseUrl = mode == "dev" ? "http://localhost:5000" : "https://api.ooshasprep.com";
 
 const axiosInstance = axios.create({
-    baseURL: mode == "dev" ? "http://localhost:5000/api/v1/" : "https://uat.gatewayabroadeducations.com/api/v1/",
+    baseURL: mode == "dev" ? "http://localhost:5000/api/v1/" : "https://api.ooshasprep.com/api/v1/",
     timeout: 60000, // 10 seconds timeout
     headers: {
         "Content-Type": "application/json"
@@ -52,7 +52,7 @@ axiosInstance.interceptors.response.use(
     }
 );
 
-export const ImageBaseUrl = "https://uat.gatewayabroadeducations.com/uploads"
+export const ImageBaseUrl = "https://api.ooshasprep.com/uploads"
 
 
 export default axiosInstance;
