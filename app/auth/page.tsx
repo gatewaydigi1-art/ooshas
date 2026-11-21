@@ -142,17 +142,30 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
     setLoading(true);
     redemption.request
       .then(async (data) => {
-        if (!active || !data?.token) return;
+        // Once the backend has redeemed the ticket, complete the client flow
+        // even if a React render/effect cleanup happened while the request was
+        // in flight. Otherwise the valid login can remain stuck on loading.
+        if (!data?.token) return;
         localStorage.setItem("accessToken", data.token);
         if (data.needsPhone) {
+          if (!active) return;
           onOAuthProfileRequired(true);
           setMode("oauth-profile");
-        }
-        await userInfo();
-        if (data.needsPhone) {
+          // Refresh the global user state without blocking the profile form.
+          // The OAuth token is already stored and can authenticate this request.
+          void userInfo().catch((error) => {
+            console.warn("Unable to refresh user context after Google sign-in:", error);
+          });
           return;
         }
-        window.location.href = getPostLoginDestination();
+
+        // Do not wait for /me here. A slow or unavailable context refresh must
+        // not leave the auth page stuck on "Checking Email...".
+        void userInfo().catch((error) => {
+          console.warn("Unable to refresh user context after Google sign-in:", error);
+        });
+        setLoading(false);
+        window.location.replace(getPostLoginDestination());
       })
       .catch(() => {
         if (!active) return;
@@ -167,7 +180,7 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
     return () => {
       active = false;
     };
-  }, [searchParams, userInfo]);
+  }, [searchParams]);
 
   const search = "";
   const referral = "";
