@@ -144,31 +144,20 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
         // Once the backend has redeemed the ticket, complete the client flow
         // even if a React render/effect cleanup happened while the request was
         // in flight. Otherwise the valid login can remain stuck on loading.
-        if (!data?.token) return;
+        if (!data?.token) {
+          throw new Error("Google login did not return an access token");
+        }
         // localStorage.setItem("accessToken", data.token);
-        if (data.needsPhone) {
-          if (!active) return;
+        const needsPhone = data.needsPhone === true || data.needsPhone === "true";
+        if (needsPhone) {
           onOAuthProfileRequired(true);
           setMode("oauth-profile");
-          // Refresh the global user state without blocking the profile form.
-          // The OAuth token is already stored and can authenticate this request.
-          void userInfo().catch((error) => {
-            console.warn(
-              "Unable to refresh user context after Google sign-in:",
-              error,
-            );
-          });
+          setLoading(false);
           return;
         }
 
         // Do not wait for /me here. A slow or unavailable context refresh must
         // not leave the auth page stuck on "Checking Email...".
-        void userInfo().catch((error) => {
-          console.warn(
-            "Unable to refresh user context after Google sign-in:",
-            error,
-          );
-        });
         setLoading(false);
         window.location.replace(getPostLoginDestination());
       })
