@@ -145,7 +145,7 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
         // even if a React render/effect cleanup happened while the request was
         // in flight. Otherwise the valid login can remain stuck on loading.
         if (!data?.token) return;
-        localStorage.setItem("accessToken", data.token);
+        // localStorage.setItem("accessToken", data.token);
         if (data.needsPhone) {
           if (!active) return;
           onOAuthProfileRequired(true);
